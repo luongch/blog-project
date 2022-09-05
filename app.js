@@ -1,4 +1,5 @@
 const express = require("express");
+var createError = require('http-errors');
 const path = require("path");
 const blogRouter = require("./routes/blog")
 const app = express();
@@ -30,8 +31,7 @@ app.use(function(err, req, res, next) {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
     // render the error page
-    res.status(err.status || 500);
-    res.send('error', {message:err.message});
+    res.status(err.status || 500).send({message:err.message});;
 });
 
 module.exports = app;
