@@ -10,10 +10,10 @@ const BlogSchema = new Schema(
     }
 )
 
-BlogScehma
+BlogSchema
     .virtual("url")
     .get(function(){
         return '/blog' + this._id
     })
 
-module.exports = monmgoose.model("Blog", BlogSchema)
+module.exports = mongoose.model("Blog", BlogSchema)

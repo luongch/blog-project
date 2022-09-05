@@ -1,21 +1,21 @@
 const express = require("express");
 const path = require("path");
-
+const blogRouter = require("./routes/blog")
 const app = express();
+const dotenv = require('dotenv');
+dotenv.config();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+const mongoose = require('mongoose');
+const mongoDB = process.env.MONGODB_URI;
+mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true });
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get("/", function(req,res,next) {
-    res.send("it worked")
-})
-app.get("/test", function(req,res,next) {
-    res.send("test worked")
-})
+
+app.use('/blog', blogRouter)
 
 
 // catch 404 and forward to error handler
@@ -31,7 +31,7 @@ app.use(function(err, req, res, next) {
 
     // render the error page
     res.status(err.status || 500);
-    res.render('error');
+    res.send('error', {message:err.message});
 });
 
 module.exports = app;
