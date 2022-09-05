@@ -11,10 +11,10 @@ const CommentSchema = new Schema(
     }
 )
 
-CommentScehma
+CommentSchema
     .virtual("url")
     .get(function(){
         return '/comment' + this._id
     })
 
-module.exports = monmgoose.model("Comment", CommentSchema)
+module.exports = mongoose.model("Comment", CommentSchema)

@@ -2,14 +2,25 @@ const Blog = require('../models/blog')
 const { body, validationResult } = require("express-validator")
 
 
-let getBlogs = async function(req,res,next){
-    let blogs = await Blog.find({});
-    res.status(200).send({data: {blogs}})
+let getBlogs = function(req,res,next){
+    Blog.find()
+        .exec(function(err, blogs) {
+            if(err) {
+                return next(err)
+            }
+            res.status(200).send({data: {blogs}})
+
+        })
 }
 
-let getBlog = async function(req,res,next){
-    let blog = await Blog.findById({_id: req.params.id})
-    res.status(200).send({data:{blog}})
+let getBlog = function(req,res,next){
+    Blog.findById({_id: req.params.id})
+    .exec(function(err,blog){
+        if(err) {
+            return next(err)
+        }
+        res.status(200).send({data:{blog}})
+    })
 }
 
 let addBlog = [
@@ -74,26 +85,32 @@ let updateBlog = [
                 errors: errors.array()
             })
         }
-        const updatedBlog = new Blog(
-            {
-                title: req.body.title,
-                text: req.body.text,
-                dateUpdated: Date.now(),
-                _id: req.params.id,
-                
-            }
-        )
-        Blog.findByIdAndUpdate(req.params.id, updatedBlog, {}, (err)=>{
-            if(!err) {
-                return next(err)
-            }
-            res.status(200).send("updated post")
-        })
+        else {
+            const updatedBlog = new Blog(
+                {
+                    title: req.body.title,
+                    text: req.body.text,
+                    dateUpdated: Date.now(),
+                    _id: req.params.id,
+                    
+                }
+            )
+            Blog.findByIdAndUpdate(req.params.id, updatedBlog, {}, (err)=>{
+                if(err) {
+                    console.log("there was an error")
+                    return next(err)
+                }
+                res.status(200).send("updated post")
+            })
+        }
+        
         
     }
 ]
 
 let deleteBlog = function(req,res,next){
+    //need to delete all comments related to this blog as well before 
+    //doing the actual delete
     Blog.findOneAndDelete({_id:req.params.id}, function(err) {
         if(err) {
             return next(err)

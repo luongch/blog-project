@@ -2,6 +2,7 @@ const express = require("express");
 var createError = require('http-errors');
 const path = require("path");
 const blogRouter = require("./routes/blog")
+const commentRouter = require("./routes/comment")
 const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
@@ -17,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/blog', blogRouter)
-
+app.use('/comment', commentRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
