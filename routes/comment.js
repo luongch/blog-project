@@ -11,10 +11,6 @@ router.get('/:id',function(req,res,next){
 })
 //update post
 router.put('/:id', commentController.updateComment)
-// //create new post
-// router.post('/comment', function(req,res,next){
-//     res.send("created new comment")
-// })
 //delete post
 router.delete('/:id', function(req,res,next){
     res.send("deleted comments")

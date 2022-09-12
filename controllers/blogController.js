@@ -2,6 +2,10 @@ const Blog = require('../models/blog')
 const { body, validationResult } = require("express-validator")
 
 
+let test = function(req,res,next) {
+    return res.status(200).json({"test":"test test"});
+}
+
 let getBlogs = function(req,res,next){
     Blog.find()
         .exec(function(err, blogs) {
@@ -9,7 +13,6 @@ let getBlogs = function(req,res,next){
                 return next(err)
             }
             res.status(200).send({data: {blogs}})
-
         })
 }
 
@@ -25,10 +28,10 @@ let getBlog = function(req,res,next){
 
 let addBlog = [
     body("title")
-    .trim()
-    .isLength({min:1})
-    .escape()
-    .withMessage("Title required"),
+        .trim()
+        .isLength({min:1})
+        .escape()
+        .withMessage("Title required"),
     body("text")
         .trim()
         .isLength({min:1})
@@ -58,24 +61,21 @@ let addBlog = [
             else {
                 res.send("success")
             }
-            
         })
-        
     }   
 ]
 
 let updateBlog = [
     body("title")
-    .trim()
-    .isLength({min:1})
-    .escape()
-    .withMessage("Title required"),
+        .trim()
+        .isLength({min:1})
+        .escape()
+        .withMessage("Title required"),
     body("text")
         .trim()
         .isLength({min:1})
         .escape()
         .withMessage("Text required")
-    
     ,
     function(req,res,next){
         const errors = validationResult(req)
@@ -97,14 +97,11 @@ let updateBlog = [
             )
             Blog.findByIdAndUpdate(req.params.id, updatedBlog, {}, (err)=>{
                 if(err) {
-                    console.log("there was an error")
                     return next(err)
                 }
                 res.status(200).send("updated post")
             })
         }
-        
-        
     }
 ]
 
@@ -124,5 +121,6 @@ module.exports = {
     getBlog,
     addBlog,
     updateBlog,
-    deleteBlog
+    deleteBlog,
+    test
 }

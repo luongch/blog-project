@@ -13,6 +13,7 @@ router.post('/', blogController.addBlog)
 router.put('/:id', blogController.updateBlog)
 //delete post
 router.delete('/:id', blogController.deleteBlog)
+router.get('/test/test', blogController.test)
 
 
 router.post('/:id/comment', commentController.addComment)
