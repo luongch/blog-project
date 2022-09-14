@@ -4,7 +4,7 @@ const path = require("path");
 const blogRouter = require("../routes/blog")
 const commentRouter = require("../routes/comment")
 const app = express();
-const connectDb = require('../mongoConfig')
+const connectDb = require('./mongoConfig')
 
 const createServer = function(mongoDbUri) {
     

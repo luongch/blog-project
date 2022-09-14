@@ -59,7 +59,9 @@ let addBlog = [
                 return next(err)
             }
             else {
-                res.send("success")
+                res.status(200).send({data: {
+                    "blog": blog
+                }})
             }
         })
     }   
