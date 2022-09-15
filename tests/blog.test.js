@@ -107,7 +107,6 @@ describe('blog module', ()=>{
         it("should return a 200 status and no results when querying for deleted blog", async()=>{
           let {body, statusCode} = await request(app).get(`/blog/${blogId}`)
           expect(statusCode).toBe(200) 
-          console.log(body) 
           expect(body.data.blog).toBe(null)
         })
       })
