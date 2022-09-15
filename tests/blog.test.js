@@ -19,10 +19,7 @@ describe('blog module', ()=>{
     instance = await MongoMemoryServer.create();
     const uri = instance.getUri();
 
-    const localDB = process.env.MONGODB_LOCAL_URI;    
     app = createServer(uri);
-
-
     app.use(express.urlencoded({ extended: false }));
     app.use("/blog", blogRouter);
 
