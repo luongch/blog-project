@@ -81,6 +81,7 @@ let updateBlog = [
     ,
     function(req,res,next){
         const errors = validationResult(req)
+        
         if(!errors.isEmpty()) {
             res.status(400).send({
                 message: req.body,
@@ -101,7 +102,9 @@ let updateBlog = [
                 if(err) {
                     return next(err)
                 }
-                res.status(200).send("updated post")
+                res.status(200).send({data: {
+                    "blog": updatedBlog
+                }})
             })
         }
     }
