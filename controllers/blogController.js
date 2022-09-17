@@ -26,46 +26,35 @@ let getBlog = function(req,res,next){
     })
 }
 
-let addBlog = [
-    body("title")
-        .trim()
-        .isLength({min:1})
-        .escape()
-        .withMessage("Title required"),
-    body("text")
-        .trim()
-        .isLength({min:1})
-        .escape()
-        .withMessage("Text required")
-    ,
-    function(req,res,next){
-        const errors = validationResult(req)
-        if(!errors.isEmpty()) {
-            res.status(400).send({
-                message: req.body,
-                errors: errors.array()
-            })
-        }
-        const blog = new Blog(
-            {
-                title: req.body.title,
-                text: req.body.text,
-                author: "author",
-                dateCreated: Date.now()
-            }
-        )
-        blog.save((err)=>{
-            if(err) {
-                return next(err)
-            }
-            else {
-                res.status(200).send({data: {
-                    "blog": blog
-                }})
-            }
+let addBlog = function(req,res,next){
+    const errors = validationResult(req)
+    console.log(errors)
+    if(!errors.isEmpty()) {
+        res.status(400).send({
+            message: req.body,
+            errors: errors.array()
         })
-    }   
-]
+    }
+    const blog = new Blog(
+        {
+            title: req.body.title,
+            text: req.body.text,
+            author: "author",
+            dateCreated: Date.now()
+        }
+    )
+    blog.save((err)=>{
+        if(err) {
+            return next(err)
+        }
+        else {
+            res.status(200).send({data: {
+                "blog": blog
+            }})
+        }
+    })
+}
+
 
 let updateBlog = [
     body("title")

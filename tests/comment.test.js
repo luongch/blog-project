@@ -7,7 +7,7 @@ const {MongoMemoryServer} = require('mongodb-memory-server')
 const dotenv = require('dotenv');
 dotenv.config();
 
-describe('comment module', ()=>{
+describe.skip('comment module', ()=>{
   let app;
   let instance;
   let blogId;
