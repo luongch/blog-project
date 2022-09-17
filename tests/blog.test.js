@@ -29,6 +29,22 @@ describe('blog module', ()=>{
     instance.stop();
   })
   describe("blog router", ()=>{
+    describe('given the user is not logged in',()=>{
+      it("should return a 403 status attempting to post a blog", async ()=>{
+        title = "sample title"
+        text = "sample text"
+        let {body,statusCode} = await request(app)
+          .post("/blog")
+          .send(
+            {
+              title,
+              text
+            }
+          )    
+          expect(statusCode).toBe(403)
+          console.log(body)
+      })
+    })
     describe('given the blog does not exist',()=>{
       it("should return a 200 status and no results when queried for by id", async ()=>{
         let invalidId = "invalidid"
