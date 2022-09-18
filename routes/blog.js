@@ -30,11 +30,9 @@ router.post('/',
     }
 )
 //update post
-router.put('/:id', blogController.updateBlog)
+router.put('/:id', passport.authenticate('jwt', { session: false }), blogController.updateBlog)
 //delete post
-router.delete('/:id', blogController.deleteBlog)
-router.get('/test/test', blogController.test)
-
+router.delete('/:id', passport.authenticate('jwt', { session: false }), blogController.deleteBlog)
 
 router.post('/:id/comment', commentController.addComment)
 

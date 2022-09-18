@@ -47,7 +47,8 @@ describe('blog module', ()=>{
           .send(
             {
               username: "username",
-              password: "password"
+              password: "password",
+              isAdmin: true
             }
           )    
          
@@ -131,6 +132,9 @@ describe('blog module', ()=>{
           updatedText = "updated text"
           
           let {body, statusCode} = await request(app).put(`/blog/${blogId}`)
+          .query({
+            secret_token: token
+          })
           .send(
             {
               title: updatedTitle,
@@ -144,7 +148,9 @@ describe('blog module', ()=>{
       })
       describe("when deleted", ()=>{
         it("should return a 200 status and success message when deleted", async()=>{
-          let {body, statusCode} = await request(app).delete(`/blog/${blogId}`)
+          let {body, statusCode} = await request(app).delete(`/blog/${blogId}`).query({
+            secret_token: token
+          })
           expect(statusCode).toBe(200)  
         })
         it("should return a 200 status and no results when querying for deleted blog", async()=>{

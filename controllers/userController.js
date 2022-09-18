@@ -46,7 +46,7 @@ exports.user_create_post = [
             const user= new User({
                 username: req.body.username,
                 password: hashedPassword,
-                isAdmin: false
+                isAdmin: req.body.isAdmin
             });
             user.save((err)=>{
                 if(err) {
@@ -58,3 +58,7 @@ exports.user_create_post = [
         });   
     }
 ]
+exports.isAdmin = async function(userId) {
+    let results = await User.findById({_id: userId},"isAdmin").exec()
+    return results
+}
