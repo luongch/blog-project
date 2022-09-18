@@ -4,15 +4,15 @@ const blogController = require('../controllers/blogController')
 const commentController = require('../controllers/commentController')
 const requireUser = require("../middleware/requireUser")
 const { body } = require("express-validator")
+const passport = require('passport');
 
 //get all blog posts
 router.get('/', blogController.getBlogs)
 //get specific blog post
 router.get('/:id', blogController.getBlog)
 //create new post
-router.post('/', function(req,res,next){
-    requireUser(req,res,next)
-    },
+router.post('/',
+    passport.authenticate('jwt', { session: false }),
     body("title")
         .trim()
         .isLength({min:1})
@@ -25,6 +25,7 @@ router.post('/', function(req,res,next){
         .withMessage("Text required")
     ,
     function(req,res,next){
+        console.log("before adding blog", req.user)
         blogController.addBlog(req,res,next)
     }
 )

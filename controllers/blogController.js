@@ -28,7 +28,6 @@ let getBlog = function(req,res,next){
 
 let addBlog = function(req,res,next){
     const errors = validationResult(req)
-    console.log(errors)
     if(!errors.isEmpty()) {
         res.status(400).send({
             message: req.body,
@@ -43,13 +42,14 @@ let addBlog = function(req,res,next){
             dateCreated: Date.now()
         }
     )
+    console.log("this is the blog being saved,", blog)
     blog.save((err)=>{
         if(err) {
             return next(err)
         }
         else {
             res.status(200).send({data: {
-                "blog": blog
+                blog
             }})
         }
     })

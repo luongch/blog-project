@@ -2,7 +2,7 @@ const { Request, Response, NextFunction } = require("express");
 
 const requireUser = (req, res, next) => {
   const user = res.locals.currentUser;
-  console.log("inside requireUser")
+  console.log("inside requireUser",res.locals.currentUser)
   if (!user) {
     console.log("user isn't logged in")
     return res.sendStatus(403);

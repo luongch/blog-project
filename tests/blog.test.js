@@ -1,12 +1,6 @@
-const blogRouter = require('../routes/blog');
-const signupRouter = require('../routes/signup')
-const authenticationRouter = require('../routes/authentication')
 const request = require("supertest");
 const createServer = require('../utils/server')
 const {MongoMemoryServer} = require('mongodb-memory-server')
-
-const dotenv = require('dotenv');
-dotenv.config();
 
 describe('blog module', ()=>{
   let app;
@@ -15,25 +9,21 @@ describe('blog module', ()=>{
   let title;
   let text;
   let updatedTitle;
-  let updatedText
+  let updatedText;
+  let token;
     
   beforeAll(async()=>{
     instance = await MongoMemoryServer.create();
     const uri = instance.getUri();
-
+    
     app = createServer(uri);
-    app.use(express.urlencoded({ extended: false }));
-    app.use("/blog", blogRouter);
-    app.use("/signup", signupRouter)
-    app.use("/auth", authenticationRouter)
-
   })
   afterAll(async()=>{
     //need to delete all the data after, maybe this should be afterEach?
     instance.stop();
   })
   describe("blog router", ()=>{
-    describe('given the user is not logged in',()=>{
+    describe.skip('given the user is not logged in',()=>{
       it("should return a 403 status attempting to post a blog", async ()=>{
         title = "sample title"
         text = "sample text"
@@ -46,12 +36,12 @@ describe('blog module', ()=>{
             }
           )    
           expect(statusCode).toBe(403)
-          console.log(body)
       })
     })
     describe('given the blog does not exist',()=>{
       beforeAll(async()=>{
         //create user
+        console.log("create user in test")
          await request(app)
           .post("/signup")
           .send(
@@ -62,6 +52,7 @@ describe('blog module', ()=>{
           )    
          
         //authenticate user
+        console.log("authenicating in test")
         let {body,statusCode} = await request(app)
           .post("/auth/login")
           .send(
@@ -70,15 +61,16 @@ describe('blog module', ()=>{
               password: "password"
             }
           ) 
-          expect(statusCode).toBe(200)   
+          token = body.token
+          console.log("token", token)
       })
       afterAll(async()=>{
         //logout
         let {body,statusCode} = await request(app)
-          .post("/auth/login")
+          .post("/auth/logout")
       })
       it("should return a 200 status and no results when queried for by id", async ()=>{
-        let invalidId = "invalidid"
+        let invalidId = "invalidId"
         let {body, statusCode} = await request(app).get(`/blog/`)
         .query({ //why does this need to be done this way? fails when you pass in directly to the .get
           id: invalidId
@@ -91,6 +83,9 @@ describe('blog module', ()=>{
         text = "sample text"
         let {body,statusCode} = await request(app)
           .post("/blog")
+          .query({
+            secret_token: token
+          })
           .send(
             {
               title,
@@ -101,11 +96,15 @@ describe('blog module', ()=>{
           expect(body.data.blog.title).toBe(title)
           expect(body.data.blog.text).toBe(text)
       })
+      
     })
-    describe.skip("given the blog does exist", ()=>{
+    describe("given the blog does exist", ()=>{
       beforeAll(async ()=>{
         let {body} = await request(app)
           .post("/blog")
+          .query({
+            secret_token: token
+          })
           .send(
             {
               title: "sample title",
@@ -157,6 +156,4 @@ describe('blog module', ()=>{
     })
   })
 });
-
-
 

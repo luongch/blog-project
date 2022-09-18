@@ -1,7 +1,6 @@
-const bcrypt = require('bcryptjs');
-const User = require('../models/user')
 const { body, validationResult } = require("express-validator");
-const passport = require('passport')
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
 exports.user_login_post = [
     body("username")
@@ -35,7 +34,7 @@ exports.user_login_post = [
         
 
         //https://stackoverflow.com/questions/41292348/404-not-found-error-setting-up-passport-in-express-4
-        passport.authenticate('local', function(err, user, info) {
+        passport.authenticate('login', function(err, user, info) {
             if (err) {
                 console.log("there is an error")
                 return res.status(500).send();
@@ -44,11 +43,18 @@ exports.user_login_post = [
                 console.log("there is no user")
                 return res.status(400).json({error:info.message});
             }
-            req.logIn(user, function(err) {
+            req.login(user, { session: false },async function(err) {
                 if (err) return next(err);
-                return res.status(200).json({data:req.user});
+                console.log("logged in")
+
+                const body = { _id: user._id, username: user.username };
+                const token = jwt.sign({ user: body }, 'TOP_SECRET');
+                return res.json({ token });
+                // return res.status(200).json({data:req.user});
             });
         })(req, res, next);
+        
+
     }    
 ]
 
